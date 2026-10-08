@@ -1,0 +1,114 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container main">
+  <nav class="breadcrumb">
+    <a href="/">← Classement</a>
+    <span class="crumb-sep">/</span>
+    <span class="crumb-cat"><%= article.category %></span>
+  </nav>
+
+  <article class="article">
+    <header class="article-header">
+      <p class="article-kicker">
+        <span class="card-category static"><%= article.category %></span>
+        <span class="dot">·</span>
+        <span><%= helpers.timeAgo(article.created_at) %></span>
+      </p>
+      <h1><%= article.title %></h1>
+      <p class="article-byline">
+        Par <strong><%= article.author_name %></strong>
+        <span class="dot">·</span>
+        <%= helpers.formatDate(article.created_at) %>
+      </p>
+
+      <div class="article-actions">
+        <button
+          type="button"
+          class="like-btn<%= article.is_liked ? ' is-liked' : '' %>"
+          data-like="<%= article.id %>"
+          aria-pressed="<%= article.is_liked ? 'true' : 'false' %>"
+          <%= user ? '' : 'disabled' %>
+        >
+          <span class="like-heart">❤️</span>
+          <span class="like-label"><%= article.is_liked ? 'Aimé' : 'J’aime' %></span>
+          <span class="like-count" data-like-count="<%= article.id %>"><%= article.likes_count %></span>
+        </button>
+
+        <a class="pill" href="#comments">💬 <%= article.comments_count %> avis</a>
+        <span class="pill pill-score" title="Score = likes + commentaires">🔥 <%= article.score %> points</span>
+      </div>
+
+      <% if (!user) { %>
+        <p class="hint">
+          <a href="/login?next=/articles/<%= article.slug %>">Connectez-vous</a> pour liker et commenter.
+        </p>
+      <% } %>
+    </header>
+
+    <% if (article.image_url) { %>
+      <figure class="article-figure">
+        <img src="<%= article.image_url %>" alt="<%= article.title %>">
+      </figure>
+    <% } %>
+
+    <div class="article-content">
+      <% article.content.split(/\n\s*\n/).forEach(function (p) { %>
+        <p><%= p %></p>
+      <% }) %>
+    </div>
+  </article>
+
+  <section class="comments" id="comments">
+    <h2>Vos avis <span class="count-badge"><%= comments.length %></span></h2>
+
+    <% if (user) { %>
+      <form class="comment-form" method="post" action="/articles/<%= article.slug %>/comments">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <label class="sr-only" for="content">Votre commentaire</label>
+        <textarea id="content" name="content" rows="3" maxlength="2000" required
+          placeholder="Partagez votre avis sur ce produit… (2000 caractères max)"></textarea>
+        <div class="form-row-end">
+          <span class="char-counter" data-counter-for="content">0 / 2000</span>
+          <button type="submit" class="btn btn-primary">Publier mon avis</button>
+        </div>
+      </form>
+    <% } else { %>
+      <div class="comment-login">
+        <p>Connectez-vous pour rejoindre la discussion.</p>
+        <a class="btn btn-primary" href="/login?next=/articles/<%= article.slug %>#comments">Se connecter</a>
+      </div>
+    <% } %>
+
+    <% if (!comments.length) { %>
+      <p class="empty-inline">Aucun commentaire pour l'instant. Soyez le premier à donner votre avis !</p>
+    <% } else { %>
+      <ul class="comment-list">
+        <% comments.forEach(function (c) { %>
+          <li class="comment">
+            <span class="avatar"><%= c.username.slice(0, 1).toUpperCase() %></span>
+            <div class="comment-body">
+              <p class="comment-meta">
+                <strong><%= c.username %></strong>
+                <% if (c.is_admin) { %><span class="tag-admin">admin</span><% } %>
+                <span class="dot">·</span>
+                <span title="<%= helpers.formatDate(c.created_at) %>"><%= helpers.timeAgo(c.created_at) %></span>
+              </p>
+              <p class="comment-text"><%= c.content %></p>
+              <% if (user && (user.isAdmin || user.id === c.user_id)) { %>
+                <form class="inline-form comment-delete" method="post"
+                      action="/articles/<%= article.slug %>/comments/<%= c.id %>/delete"
+                      onsubmit="return confirm('Supprimer ce commentaire ?')">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="link-danger">Supprimer</button>
+                </form>
+              <% } %>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

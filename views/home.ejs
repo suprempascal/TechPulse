@@ -1,0 +1,75 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container main">
+  <section class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Avis communautaires · classement en direct</p>
+      <h1>Les produits tech, <em>notés par ceux qui les utilisent.</em></h1>
+      <p class="hero-sub">
+        Lisez les critiques, laissez la vôtre, aimez les articles qui vous parlent.
+        Le classement se met à jour à chaque like et à chaque commentaire.
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><strong><%= stats.articles %></strong><span>articles</span></div>
+        <div class="stat"><strong>Top</strong><span>score = likes + avis</span></div>
+        <div class="stat"><strong><%= categories.length %></strong><span>catégories</span></div>
+      </div>
+    </div>
+    <% const heroTop = articles.slice(0, 1)[0]; %>
+    <% if (heroTop) { %>
+      <a class="hero-feature" href="/articles/<%= heroTop.slug %>">
+        <% if (heroTop.image_url) { %>
+          <img src="<%= heroTop.image_url %>" alt="">
+        <% } %>
+        <div class="hero-feature-overlay">
+          <span class="card-rank rank-1">#1 du moment</span>
+          <h2><%= heroTop.title %></h2>
+          <p><%= helpers.excerpt(heroTop.excerpt || heroTop.content, 110) %></p>
+          <span class="hero-feature-cta">Lire l'article →</span>
+        </div>
+      </a>
+    <% } %>
+  </section>
+
+  <section class="toolbar" aria-label="Filtres du classement">
+    <div class="tabs" role="tablist">
+      <% sorts.forEach(function (s) { %>
+        <a role="tab"
+           class="tab<%= currentSort === s.key ? ' is-active' : '' %>"
+           href="/?sort=<%= s.key %><%= currentCategory ? '&categorie=' + encodeURIComponent(currentCategory) : '' %>">
+          <%= s.label %>
+        </a>
+      <% }) %>
+    </div>
+
+    <form class="category-filter" method="get" action="/">
+      <input type="hidden" name="sort" value="<%= currentSort %>">
+      <label for="categorie">Catégorie</label>
+      <select id="categorie" name="categorie" onchange="this.form.submit()">
+        <option value="">Toutes</option>
+        <% categories.forEach(function (c) { %>
+          <option value="<%= c %>"<%= currentCategory === c ? ' selected' : '' %>><%= c %></option>
+        <% }) %>
+      </select>
+      <% if (currentCategory) { %>
+        <a class="clear-filter" href="/?sort=<%= currentSort %>" title="Réinitialiser">×</a>
+      <% } %>
+    </form>
+  </section>
+
+  <% if (!articles.length) { %>
+    <div class="empty">
+      <p>Aucun article dans cette catégorie pour le moment.</p>
+      <a class="btn btn-ghost" href="/">Voir tout le classement</a>
+    </div>
+  <% } else { %>
+    <section class="grid">
+      <% articles.forEach(function (a) { %>
+        <%- include('partials/article-card', { article: a, top3: top3 }) %>
+      <% }) %>
+    </section>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>

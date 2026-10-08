@@ -1,0 +1,18 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container main narrow">
+  <section class="error-card">
+    <div class="error-code"><%= status %></div>
+    <h1><%= title %></h1>
+    <p><%= message %></p>
+    <div class="error-actions">
+      <% if (typeof action !== 'undefined' && action) { %>
+        <a class="btn btn-primary" href="<%= action.href %>"><%= action.label %></a>
+      <% } %>
+      <a class="btn btn-ghost" href="/">Retour à l'accueil</a>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

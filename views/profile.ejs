@@ -1,0 +1,78 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container main">
+  <section class="profile-head">
+    <span class="avatar avatar-lg"><%= user.username.slice(0, 1).toUpperCase() %></span>
+    <div>
+      <h1><%= user.username %><% if (user.isAdmin) { %> <span class="tag-admin">admin</span><% } %></h1>
+      <p class="muted">Membre depuis le <%= helpers.formatDate(user.createdAt) %></p>
+    </div>
+    <div class="profile-stats">
+      <div class="stat"><strong><%= stats.articles %></strong><span>articles</span></div>
+      <div class="stat"><strong><%= stats.comments %></strong><span>commentaires</span></div>
+      <div class="stat"><strong><%= stats.likes %></strong><span>likes donnés</span></div>
+    </div>
+  </section>
+
+  <% if (user.isAdmin) { %>
+    <p class="admin-banner">
+      <a class="btn btn-primary" href="/articles/new">+ Publier un nouvel article</a>
+    </p>
+  <% } %>
+
+  <section class="profile-section">
+    <h2>Mes articles <span class="count-badge"><%= articles.length %></span></h2>
+    <% if (!articles.length) { %>
+      <p class="empty-inline">Vous n'avez pas encore publié d'article.</p>
+    <% } else { %>
+      <div class="grid">
+        <% articles.forEach(function (a) { %>
+          <%- include('partials/article-card', { article: a, top3: [] }) %>
+        <% }) %>
+      </div>
+    <% } %>
+  </section>
+
+  <div class="profile-two-col">
+    <section class="profile-section">
+      <h2>Mes commentaires <span class="count-badge"><%= comments.length %></span></h2>
+      <% if (!comments.length) { %>
+        <p class="empty-inline">Aucun commentaire pour le moment.</p>
+      <% } else { %>
+        <ul class="comment-list compact">
+          <% comments.forEach(function (c) { %>
+            <li class="comment">
+              <div class="comment-body">
+                <p class="comment-meta">
+                  <a href="/articles/<%= c.article_slug %>#comments"><%= c.article_title %></a>
+                  <span class="dot">·</span>
+                  <span title="<%= helpers.formatDate(c.created_at) %>"><%= helpers.timeAgo(c.created_at) %></span>
+                </p>
+                <p class="comment-text"><%= c.content %></p>
+              </div>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </section>
+
+    <section class="profile-section">
+      <h2>Articles aimés <span class="count-badge"><%= liked.length %></span></h2>
+      <% if (!liked.length) { %>
+        <p class="empty-inline">Vous n'avez encore liké aucun article.</p>
+      <% } else { %>
+        <ul class="link-list">
+          <% liked.forEach(function (a) { %>
+            <li>
+              <a href="/articles/<%= a.slug %>"><%= a.title %></a>
+              <span class="chip"><%= a.category %></span>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </section>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

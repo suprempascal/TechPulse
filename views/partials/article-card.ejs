@@ -1,0 +1,40 @@
+<article class="card">
+  <a class="card-media" href="/articles/<%= article.slug %>" aria-hidden="true" tabindex="-1">
+    <% if (article.image_url) { %>
+      <img src="<%= article.image_url %>" alt="" loading="lazy">
+    <% } else { %>
+      <span class="card-media-placeholder"><%= article.category.slice(0, 1) %></span>
+    <% } %>
+    <span class="card-category"><%= article.category %></span>
+    <% const rank = top3.indexOf(article.id); %>
+    <% if (rank !== -1) { %>
+      <span class="card-rank rank-<%= rank + 1 %>">#<%= rank + 1 %></span>
+    <% } %>
+  </a>
+
+  <div class="card-body">
+    <h2 class="card-title"><a href="/articles/<%= article.slug %>"><%= article.title %></a></h2>
+    <p class="card-excerpt"><%= helpers.excerpt(article.excerpt || article.content, 140) %></p>
+  </div>
+
+  <div class="card-meta">
+    <span class="meta-score" title="Score = likes + commentaires">
+      <strong><%= article.score %></strong><span class="meta-label">score</span>
+    </span>
+    <span class="meta-item" title="Likes">
+      <button
+        type="button"
+        class="like-mini<%= article.is_liked ? ' is-liked' : '' %>"
+        data-like="<%= article.id %>"
+        aria-pressed="<%= article.is_liked ? 'true' : 'false' %>"
+        aria-label="Aimer cet article"
+        <%= user ? '' : 'disabled' %>
+      >❤️</button>
+      <span data-like-count="<%= article.id %>"><%= article.likes_count %></span>
+    </span>
+    <a class="meta-item" href="/articles/<%= article.slug %>#comments" title="Commentaires">
+      💬 <span><%= article.comments_count %></span>
+    </a>
+    <span class="meta-author"><%= article.author_name %></span>
+  </div>
+</article>

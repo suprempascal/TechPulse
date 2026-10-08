@@ -1,0 +1,62 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main class="container main narrow">
+  <section class="auth-card wide">
+    <p class="eyebrow">Espace administrateur</p>
+    <h1>Publier un article</h1>
+    <p class="auth-sub">Présentez un produit tech : le classement se mettra à jour automatiquement.</p>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="flash flash-error"><span><%= error %></span></div>
+    <% } %>
+
+    <form method="post" action="/articles/new" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <div class="field">
+        <label for="title">Titre</label>
+        <input id="title" name="title" type="text" required minlength="8" maxlength="120"
+               value="<%= form.title %>" placeholder="ex. Sony WH-1000XM6 : le silence au sommet">
+      </div>
+
+      <div class="two-cols">
+        <div class="field">
+          <label for="category">Catégorie</label>
+          <input id="category" name="category" type="text" list="categories" required
+                 value="<%= form.category %>" placeholder="Audio">
+          <datalist id="categories">
+            <option value="Smartphone"><option value="Laptop"><option value="Audio">
+            <option value="Périphérique"><option value="Composant"><option value="Wearable">
+            <option value="Écran"><option value="Drone">
+          </datalist>
+        </div>
+        <div class="field">
+          <label for="imageUrl">Image d'illustration (URL, optionnelle)</label>
+          <input id="imageUrl" name="imageUrl" type="url" value="<%= form.imageUrl %>"
+                 placeholder="https://…">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="excerpt">Chapeau (résumé affiché dans le classement)</label>
+        <input id="excerpt" name="excerpt" type="text" maxlength="200"
+               value="<%= form.excerpt %>" placeholder="2 à 3 phrases percutantes…">
+      </div>
+
+      <div class="field">
+        <label for="content">Contenu</label>
+        <textarea id="content" name="content" rows="14" required minlength="100"
+                  placeholder="Un paragraphe vide sépare deux paragraphes…"><%= form.content %></textarea>
+        <small>Minimum 100 caractères. Une ligne vide sépare les paragraphes.</small>
+      </div>
+
+      <div class="form-row-end">
+        <a class="btn btn-ghost" href="/">Annuler</a>
+        <button type="submit" class="btn btn-primary">Publier l'article</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

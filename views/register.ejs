@@ -1,0 +1,51 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container main narrow">
+  <section class="auth-card">
+    <h1>Créer un compte</h1>
+    <p class="auth-sub">Rejoignez TechPulse et donnez votre avis sur les produits que vous utilisez.</p>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="flash flash-error"><span><%= error %></span></div>
+    <% } %>
+
+    <form method="post" action="/register" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <div class="field">
+        <label for="username">Nom d'utilisateur</label>
+        <input id="username" name="username" type="text" autocomplete="username" required
+               minlength="3" maxlength="20" pattern="[a-zA-Z0-9_.\-]+"
+               value="<%= typeof form !== 'undefined' && form ? form.username : '' %>"
+               placeholder="ex. jean_k">
+        <small>3 à 20 caractères : lettres, chiffres, point, tiret, underscore.</small>
+      </div>
+
+      <div class="field">
+        <label for="email">Adresse e-mail</label>
+        <input id="email" name="email" type="email" autocomplete="email" required
+               value="<%= typeof form !== 'undefined' && form ? form.email : '' %>"
+               placeholder="vous@exemple.com">
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input id="password" name="password" type="password" autocomplete="new-password" required
+               minlength="8" placeholder="8 caractères minimum">
+      </div>
+
+      <div class="field">
+        <label for="confirm">Confirmer le mot de passe</label>
+        <input id="confirm" name="confirm" type="password" autocomplete="new-password" required
+               minlength="8" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Créer mon compte</button>
+    </form>
+
+    <p class="auth-alt">Déjà inscrit ? <a href="/login">Connectez-vous</a></p>
+  </section>
+</main>
+
+<%- include('partials/footer') %>

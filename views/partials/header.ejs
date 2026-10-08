@@ -1,0 +1,43 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-name">Tech<em>Pulse</em></span>
+    </a>
+
+    <nav class="nav">
+      <a href="/" class="nav-link<%= path === '/' ? ' is-active' : '' %>">Accueil</a>
+      <% if (user && user.isAdmin) { %>
+        <a href="/articles/new" class="nav-link<%= path === '/articles/new' ? ' is-active' : '' %>">Publier</a>
+      <% } %>
+      <% if (user) { %>
+        <a href="/profile" class="nav-link<%= path === '/profile' ? ' is-active' : '' %>">Profil</a>
+      <% } %>
+    </nav>
+
+    <div class="header-actions">
+      <% if (user) { %>
+        <a href="/profile" class="user-chip" title="Mon profil">
+          <span class="avatar"><%= user.username.slice(0, 1).toUpperCase() %></span>
+          <span class="user-chip-name"><%= user.username %><% if (user.isAdmin) { %> <span class="tag-admin">admin</span><% } %></span>
+        </a>
+        <form action="/logout" method="post" class="inline-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-ghost btn-sm">Déconnexion</button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="btn btn-ghost btn-sm">Connexion</a>
+        <a href="/register" class="btn btn-primary btn-sm">Créer un compte</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+
+<% if (flash) { %>
+  <div class="container">
+    <div class="flash flash-<%= flash.type %>" role="status">
+      <span><%= flash.message %></span>
+      <button type="button" class="flash-close" onclick="this.parentElement.remove()" aria-label="Fermer">×</button>
+    </div>
+  </div>
+<% } %>

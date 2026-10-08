@@ -1,0 +1,45 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container main narrow">
+  <section class="auth-card">
+    <h1>Connexion</h1>
+    <p class="auth-sub">Retrouvez vos likes, vos commentaires et votre profil.</p>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="flash flash-error"><span><%= error %></span></div>
+    <% } %>
+
+    <form method="post" action="/login" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="hidden" name="next" value="<%= next %>">
+
+      <div class="field">
+        <label for="username">Nom d'utilisateur</label>
+        <input id="username" name="username" type="text" autocomplete="username" required
+               value="<%= typeof form !== 'undefined' && form ? form.username : '' %>"
+               placeholder="demo">
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required
+               placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+    </form>
+
+    <p class="auth-alt">Pas encore de compte ? <a href="/register">Créez-en un</a></p>
+
+    <div class="demo-box">
+      <strong>Comptes de démonstration</strong>
+      <ul>
+        <li><code>demo / demo123</code> — utilisateur</li>
+        <li><code>admin / admin123</code> — administrateur (peut publier)</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
